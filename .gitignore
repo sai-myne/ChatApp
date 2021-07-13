@@ -1,2 +1,4 @@
 # ignore node packages
 node_modules
+
+config
