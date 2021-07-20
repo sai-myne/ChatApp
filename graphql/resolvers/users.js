@@ -1,24 +1,40 @@
-const { User } = require("../../models");
+const { Message, User } = require("../../models");
 const bcrypt = require("bcryptjs");
 const { UserInputError, AuthenticationError } = require("apollo-server");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../../config/env.json");
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 module.exports = {
   Query: {
-    getUsers: async (_, __, {user}) => {
+    getUsers: async (_, __, { user }) => {
       try {
-          if(!user) throw new AuthenticationError('Unauthenticated')
-        
-        const users = await User.findAll({
-            where: { username: { [Op.ne]: user.username }}
+        if (!user) throw new AuthenticationError("Unauthenticated");
+
+        let users = await User.findAll({
+          attributes: ["username", "imageUrl", "createdAt"],
+          where: { username: { [Op.ne]: user.username } },
         });
 
+        const allUserMessages = await Message.findAll({
+          where: {
+            [Op.or]: [{ from: user.username }, { to: user.username }]
+          },
+          order: [['createdAt', 'DESC']]
+        })
+
+        users = users.map(otherUser => {
+          const latestMessage = allUserMessages.find(
+            m => m.from === otherUser.username || m.to === otherUser.username
+          )
+          otherUser.latestMessage = latestMessage
+          return otherUser
+        })
+        
         return users;
       } catch (err) {
         console.log(err);
-        throw err
+        throw err;
       }
     },
     login: async (_, args) => {
@@ -119,6 +135,6 @@ module.exports = {
         }
         throw new UserInputError("Bad input", { errors });
       }
-    }
+    },
   },
 };
