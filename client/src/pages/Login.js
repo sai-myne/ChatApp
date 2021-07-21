@@ -70,7 +70,7 @@ export default function Register(props) {
               }
             />
           </Form.Group>
-          <div className="text-center">
+          <div className="text-center mt-2">
             <Button variant="success" type="submit" disabled={loading}>
               {loading ? 'loading..' : 'Login'}
             </Button>
