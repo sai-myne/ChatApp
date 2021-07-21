@@ -1,9 +1,9 @@
-import React from 'react'
-import { gql, useQuery } from '@apollo/client'
-import { Col, Image } from 'react-bootstrap'
-import classNames from 'classnames'
+import React from "react";
+import { gql, useQuery } from "@apollo/client";
+import { Col, Image } from "react-bootstrap";
+import classNames from "classnames";
 
-import { useMessageDispatch, useMessageState } from '../../context/message'
+import { useMessageDispatch, useMessageState } from "../../context/message";
 
 const GET_USERS = gql`
   query getUsers {
@@ -20,7 +20,7 @@ const GET_USERS = gql`
       }
     }
   }
-`
+`;
 
 export default function Users() {
   const dispatch = useMessageDispatch();
@@ -44,16 +44,22 @@ export default function Users() {
       return (
         <div
           role="button"
-          className={classNames("user-div d-flex justify-content-center justify-content-md-start p-3", {
-            "bg-white": selected,
-          })}
+          className={classNames(
+            "user-div d-flex justify-content-center justify-content-md-start p-3",
+            {
+              "bg-white": selected,
+            }
+          )}
           key={user.username}
           onClick={() =>
             dispatch({ type: "SET_SELECTED_USER", payload: user.username })
           }
         >
           <Image
-            src={user.imageUrl}
+            src={
+              user.imageUrl ||
+              "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
+            }
             className="user-image"
           />
           <div className="d-none d-md-block ms-2">

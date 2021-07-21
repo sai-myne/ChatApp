@@ -2,7 +2,7 @@ import React from "react";
 import { useAuthState } from "../../context/auth";
 import classNames from "classnames";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import moment from 'moment'
+import moment from "moment";
 
 export default function Message({ message }) {
   const { user } = useAuthState();
